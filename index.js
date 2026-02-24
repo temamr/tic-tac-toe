@@ -4,16 +4,26 @@ const EMPTY = ' ';
 
 const container = document.getElementById('fieldWrapper');
 
-const board = [[EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY], [EMPTY, EMPTY, EMPTY]];
+let dim = 4;
+
+const board = [];
+for (let i = 0; i < dim; i++) {
+    let row = [];
+    for (let j = 0; j < dim; j++) {
+        row.push(EMPTY);
+    }
+    board.push(row);
+}
 let turn = CROSS;
 
 let victory = false;
+
 
 startGame();
 addResetListener();
 
 function startGame () {
-    renderGrid(3);
+    renderGrid(dim);
 }
 
 function renderGrid (dimension) {
@@ -32,38 +42,38 @@ function renderGrid (dimension) {
 }
 
 function checkVictory(sign) {
-    for (let row = 0; row < 3; row++) {
+    for (let row = 0; row < dim; row++) {
         let all = true;
-        for (let col = 0; col < 3; col++){
+        for (let col = 0; col < dim; col++){
             if (board[row][col] !== sign) all = false;
         }
         if (all) return true;
     }
 
-    for (let col = 0; col < 3; col++){
+    for (let col = 0; col < dim; col++){
         let all = true;
-        for (let row = 0; row < 3; row++) {
+        for (let row = 0; row < dim; row++) {
             if (board[row][col] !== sign) all = false;
         }
         if (all) return true;
     }
 
     let allDiag1 = true;
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < dim; i++) {
         if (board[i][i] !== sign) allDiag1 = false;
     }
     if (allDiag1) return true;
 
     let allDiag2 = true;
-    for (let i = 0; i < 3; i++) {
-        if (board[2 - i][i] !== sign) allDiag2 = false;
+    for (let i = 0; i < dim; i++) {
+        if (board[dim - 1 - i][i] !== sign) allDiag2 = false;
     }
     if (allDiag2) return true;
 }
 
 function outOfSteps() {
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < dim; i++) {
+        for (let j = 0; j < dim; j++) {
             if (board[i][j] === EMPTY) return false;
         }
     }
@@ -78,11 +88,6 @@ function cellClickHandler (row, col) {
 
     renderSymbolInCell(turn, row, col);
 
-    if (outOfSteps()) {
-        alert("Победила дружба");
-        return;
-    }
-
     if (checkVictory(CROSS)){
         colorCells(CROSS);
         alert("Победили крестики");
@@ -94,12 +99,17 @@ function cellClickHandler (row, col) {
         victory = true;
     }
 
+    if (outOfSteps()) {
+        alert("Победила дружба");
+        return;
+    }
+
     turn = turn === CROSS ? ZERO : CROSS;
 }
 
 function colorCells(sign) {
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < dim; i++) {
+        for (let j = 0; j < dim; j++) {
             if (board[i][j] !== sign) continue;
             let cell = findCell(i, j);
             cell.style.color = "red";
@@ -127,8 +137,8 @@ function addResetListener () {
 function resetClickHandler () {
     console.log('reset!');
 
-    for (let i = 0; i < 3; i++) {
-        for (let j = 0; j < 3; j++) {
+    for (let i = 0; i < dim; i++) {
+        for (let j = 0; j < dim; j++) {
             board[i][j] = EMPTY;
             renderSymbolInCell(EMPTY, i, j);
         }
