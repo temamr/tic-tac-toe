@@ -80,6 +80,18 @@ function outOfSteps() {
     return true;
 }
 
+function randomStep() {
+    let found = false;
+    let row = 0;
+    let col = 0;
+    while (!found) {
+        row = Math.floor(Math.random() * dim);
+        col = Math.floor(Math.random() * dim);
+        if (board[row][col] === EMPTY) found = true;
+    }
+    cellClickHandler(row, col);
+}
+
 function cellClickHandler (row, col) {
     console.log(`Clicked on cell: ${row}, ${col}`);
     if (victory) return;
@@ -105,6 +117,7 @@ function cellClickHandler (row, col) {
     }
 
     turn = turn === CROSS ? ZERO : CROSS;
+    if (turn === ZERO) randomStep();
 }
 
 function colorCells(sign) {
